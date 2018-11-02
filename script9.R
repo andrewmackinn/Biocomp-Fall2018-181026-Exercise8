@@ -1,25 +1,58 @@
 #Plot Scores as they happedn
 
-scores = read.table("UWvMSU_1-22-13.txt", stringsAsFactors = FALSE)
-for (i in 1:length(scores)) {
-  
+install.packages("tidyverse")
+library(tidyverse)
+library(dplyr)
+
+scores = read.table("UWvMSU_1-22-13.txt", header = TRUE , stringsAsFactors = FALSE)
+
+MSU_final= data.frame(score = as.integer(), time = as.numeric())
+WISC_final= data.frame(score = as.integer(), time = as.numeric())
+
+MSU_update= scores[scores$team == "MSU",]
+WISC_update = scores[scores$team == "UW",]
+
+
+MSU_update <- MSU_update %>%
+  mutate(cumsum = cumsum(score))
+
+for (i in 1:length(MSU_update$score)){
+  MSU_final[i,1] = MSU_update[i,4]
+  MSU_final[i,2] = MSU_update[i,1]
 }
 
 
 
+WISC_update = WISC_update %>%
+  mutate(cumsum = cumsum(score))
+
+for (i in 1:length(WISC_update$score)){
+  WISC_final[i,1] = WISC_update[i,4]
+  WISC_final[i,2] = WISC_update[i,1]
+}
+
+WISC_final$team <- "WISC"
+MSU_final$team <- "MSU"
+
+final_cumulative <- rbind(WISC_final, MSU_final)
+
+final_cumulative %>%
+  ggplot(mapping = aes(x = time, y = score, color = team)) +
+  geom_line()
 
 
 
-#read through the table
-#add all numbers with UW in column progressively, same with MSU
-
-
-readline()
-setwd("Biocomp-Fall2018-181026-Exercise8")
-setwd('..')
 
 
 
+
+
+
+
+
+
+
+#number game
 readinteger = function(){
   n = readline(prompt = "guess my number")
   if(!grep("^[0-9]+$", n)){
