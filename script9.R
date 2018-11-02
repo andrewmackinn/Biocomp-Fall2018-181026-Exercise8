@@ -3,19 +3,19 @@
 install.packages("tidyverse")
 library(tidyverse)
 library(dplyr)
-
+#upload data
 scores = read.table("UWvMSU_1-22-13.txt", header = TRUE , stringsAsFactors = FALSE)
-
+#make empty dataframes
 MSU_final= data.frame(score = as.integer(), time = as.numeric())
 WISC_final= data.frame(score = as.integer(), time = as.numeric())
-
+#extract scores for each team
 MSU_update= scores[scores$team == "MSU",]
 WISC_update = scores[scores$team == "UW",]
 
-
+#convert to cumulative sum 
 MSU_update <- MSU_update %>%
   mutate(cumsum = cumsum(score))
-
+#for loop to get sums over every time 
 for (i in 1:length(MSU_update$score)){
   MSU_final[i,1] = MSU_update[i,4]
   MSU_final[i,2] = MSU_update[i,1]
